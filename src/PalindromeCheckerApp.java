@@ -1,56 +1,113 @@
 /*
- * UC11: Object-Oriented Palindrome Service
+ * UC12: Strategy Pattern for Palindrome Algorithms
  * Palindrome Checker App
- * Version: 2.0
+ * Version: 2.1
  */
 
-import java.util.Scanner;
+import java.util.*;
 
-// Service class that encapsulates palindrome logic
-class PalindromeChecker {
+// Strategy Interface
+interface PalindromeStrategy {
+    boolean check(String input);
+}
 
-    // Public method to check palindrome
-    public boolean checkPalindrome(String input) {
+// Stack-Based Strategy (LIFO)
+class StackStrategy implements PalindromeStrategy {
 
-        if (input == null) {
-            return false;
+    @Override
+    public boolean check(String input) {
+
+        Stack<Character> stack = new Stack<>();
+
+        for (char ch : input.toCharArray()) {
+            stack.push(ch);
         }
 
-        int start = 0;
-        int end = input.length() - 1;
-
-        while (start < end) {
-            if (input.charAt(start) != input.charAt(end)) {
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) != stack.pop()) {
                 return false;
             }
-            start++;
-            end--;
         }
 
         return true;
     }
 }
 
+// Deque-Based Strategy (Front & Rear Comparison)
+class DequeStrategy implements PalindromeStrategy {
+
+    @Override
+    public boolean check(String input) {
+
+        Deque<Character> deque = new ArrayDeque<>();
+
+        for (char ch : input.toCharArray()) {
+            deque.addLast(ch);
+        }
+
+        while (deque.size() > 1) {
+            if (!deque.removeFirst().equals(deque.removeLast())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+// Context Class
+class PalindromeContext {
+
+    private PalindromeStrategy strategy;
+
+    // Inject strategy dynamically
+    public PalindromeContext(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void setStrategy(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public boolean executeStrategy(String input) {
+        return strategy.check(input);
+    }
+}
+
+// Main Application
 public class PalindromeCheckerApp {
 
-    // Main Method - Entry point
     public static void main(String[] args) {
 
-        System.out.println("===============================================");
-        System.out.println("           Palindrome Checker App             ");
-        System.out.println("===============================================");
-        System.out.println("UC11: Object-Oriented Palindrome Service");
-        System.out.println("===============================================");
+        System.out.println("=================================================");
+        System.out.println("             Palindrome Checker App             ");
+        System.out.println("=================================================");
+        System.out.println("UC12: Strategy Pattern - Dynamic Algorithm Selection");
+        System.out.println("=================================================");
 
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter a word: ");
         String input = scanner.nextLine();
 
-        // Create object of PalindromeChecker
-        PalindromeChecker checker = new PalindromeChecker();
+        System.out.println("Choose Algorithm:");
+        System.out.println("1. Stack Strategy");
+        System.out.println("2. Deque Strategy");
+        System.out.print("Enter choice (1 or 2): ");
 
-        boolean result = checker.checkPalindrome(input);
+        int choice = scanner.nextInt();
+
+        PalindromeStrategy strategy;
+
+        if (choice == 1) {
+            strategy = new StackStrategy();
+        } else {
+            strategy = new DequeStrategy();
+        }
+
+        PalindromeContext context = new PalindromeContext(strategy);
+
+        boolean result = context.executeStrategy(input);
 
         if (result) {
             System.out.println("The word \"" + input + "\" is a Palindrome.");
@@ -58,7 +115,7 @@ public class PalindromeCheckerApp {
             System.out.println("The word \"" + input + "\" is NOT a Palindrome.");
         }
 
-        System.out.println("===============================================");
+        System.out.println("=================================================");
 
         scanner.close();
     }
