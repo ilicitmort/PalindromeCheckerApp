@@ -45,6 +45,7 @@ public class PalindromeCheckerApp {
             }
         }
 
+
         // Display Result
         if (isPalindrome) {
             System.out.println("The word \"" + input + "\" is a Palindrome.");
