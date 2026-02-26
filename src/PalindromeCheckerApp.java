@@ -1,22 +1,30 @@
 /*
- * UC7: Deque-Based Optimized Palindrome Checker
+ * UC8: Linked List Based Palindrome Checker
  * Palindrome Checker App
- * Version: 1.6
+ * Version: 1.7
  */
 
 import java.util.Scanner;
-import java.util.Deque;
-import java.util.ArrayDeque;
 
 public class PalindromeCheckerApp {
 
-    // Main Method - Entry point
+    // Node class for Singly Linked List
+    static class Node {
+        char data;
+        Node next;
+
+        Node(char data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+
     public static void main(String[] args) {
 
         System.out.println("=======================================");
         System.out.println("        Palindrome Checker App        ");
         System.out.println("=======================================");
-        System.out.println("UC7: Deque-Based Optimized Palindrome Checker");
+        System.out.println("UC8: Linked List Based Palindrome Checker");
         System.out.println("=======================================");
 
         Scanner scanner = new Scanner(System.in);
@@ -24,29 +32,61 @@ public class PalindromeCheckerApp {
         System.out.print("Enter a word: ");
         String input = scanner.nextLine();
 
-        // Create Deque
-        Deque<Character> deque = new ArrayDeque<>();
-
-        // Insert characters into deque
-        for (int i = 0; i < input.length(); i++) {
-            deque.addLast(input.charAt(i));
+        if (input.length() == 0) {
+            System.out.println("Empty string is considered a Palindrome.");
+            return;
         }
 
-        boolean isPalindrome = true;
+        // Convert string to linked list
+        Node head = null;
+        Node tail = null;
 
-        // Compare front and rear elements
-        while (deque.size() > 1) {
-            char front = deque.removeFirst();
-            char rear = deque.removeLast();
-
-            if (front != rear) {
-                isPalindrome = false;
-                break;
+        for (char ch : input.toCharArray()) {
+            Node newNode = new Node(ch);
+            if (head == null) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
             }
         }
 
+        // Use fast and slow pointer to find middle
+        Node slow = head;
+        Node fast = head;
 
-        // Display Result
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        // Reverse second half
+        Node prev = null;
+        Node current = slow;
+
+        while (current != null) {
+            Node nextNode = current.next;
+            current.next = prev;
+            prev = current;
+            current = nextNode;
+        }
+
+        // Compare first half and reversed second half
+        Node firstHalf = head;
+        Node secondHalf = prev;
+        boolean isPalindrome = true;
+
+        while (secondHalf != null) {
+            if (firstHalf.data != secondHalf.data) {
+                isPalindrome = false;
+                break;
+            }
+            firstHalf = firstHalf.next;
+            secondHalf = secondHalf.next;
+        }
+
+        // Display result
         if (isPalindrome) {
             System.out.println("The word \"" + input + "\" is a Palindrome.");
         } else {
