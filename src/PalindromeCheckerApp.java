@@ -1,10 +1,12 @@
 /*
- * UC5: Stack-Based Palindrome Checker
+ * UC6: Queue + Stack Based Palindrome Check
  * Palindrome Checker App
- * Version: 1.4
+ * Version: 1.5
  */
 
 import java.util.Scanner;
+import java.util.Queue;
+import java.util.LinkedList;
 import java.util.Stack;
 
 public class PalindromeCheckerApp {
@@ -15,7 +17,7 @@ public class PalindromeCheckerApp {
         System.out.println("=======================================");
         System.out.println("        Palindrome Checker App        ");
         System.out.println("=======================================");
-        System.out.println("UC5: Stack-Based Palindrome Checker");
+        System.out.println("UC6: Queue + Stack Based Palindrome Check");
         System.out.println("=======================================");
 
         Scanner scanner = new Scanner(System.in);
@@ -23,23 +25,31 @@ public class PalindromeCheckerApp {
         System.out.print("Enter a word: ");
         String input = scanner.nextLine();
 
-        // Create Stack
+        // Create Queue (FIFO)
+        Queue<Character> queue = new LinkedList<>();
+
+        // Create Stack (LIFO)
         Stack<Character> stack = new Stack<>();
 
-        // Push characters into stack
+        // Enqueue and Push characters
         for (int i = 0; i < input.length(); i++) {
-            stack.push(input.charAt(i));
+            char ch = input.charAt(i);
+            queue.add(ch);     // Enqueue
+            stack.push(ch);    // Push
         }
 
-        // Pop characters and build reversed string
-        String reversed = "";
+        boolean isPalindrome = true;
 
-        while (!stack.isEmpty()) {
-            reversed = reversed + stack.pop();
+        // Compare dequeue (queue) with pop (stack)
+        while (!queue.isEmpty()) {
+            if (!queue.remove().equals(stack.pop())) {
+                isPalindrome = false;
+                break;
+            }
         }
 
-        // Compare original and reversed
-        if (input.equals(reversed)) {
+        // Display Result
+        if (isPalindrome) {
             System.out.println("The word \"" + input + "\" is a Palindrome.");
         } else {
             System.out.println("The word \"" + input + "\" is NOT a Palindrome.");
