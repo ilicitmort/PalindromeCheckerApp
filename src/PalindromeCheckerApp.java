@@ -1,44 +1,45 @@
 /*
- * UC3: Palindrome Check Using String Reverse
+ * UC5: Stack-Based Palindrome Checker
  * Palindrome Checker App
- * Version: 1.0
+ * Version: 1.4
  */
 
 import java.util.Scanner;
+import java.util.Stack;
 
 public class PalindromeCheckerApp {
 
-    // Main Method - Entry point of the application
+    // Main Method - Entry point
     public static void main(String[] args) {
 
         System.out.println("=======================================");
         System.out.println("        Palindrome Checker App        ");
         System.out.println("=======================================");
-        System.out.println("UC4: Character Based Palindrome Check");
+        System.out.println("UC5: Stack-Based Palindrome Checker");
         System.out.println("=======================================");
 
-        // Create Scanner object to take user input
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter a word: ");
         String input = scanner.nextLine();
-        char[] characters = input.toCharArray();
 
+        // Create Stack
+        Stack<Character> stack = new Stack<>();
 
-        int start = 0;
-        int end = characters.length - 1;
-        boolean isPalindrome = true;
-
-        while (start < end) {
-            if (characters[start] != characters[end]) {
-                isPalindrome = false;
-                break;
-            }
-            start++;
-            end--;
+        // Push characters into stack
+        for (int i = 0; i < input.length(); i++) {
+            stack.push(input.charAt(i));
         }
-        // Compare original and reversed using equals()
-        if (isPalindrome) {
+
+        // Pop characters and build reversed string
+        String reversed = "";
+
+        while (!stack.isEmpty()) {
+            reversed = reversed + stack.pop();
+        }
+
+        // Compare original and reversed
+        if (input.equals(reversed)) {
             System.out.println("The word \"" + input + "\" is a Palindrome.");
         } else {
             System.out.println("The word \"" + input + "\" is NOT a Palindrome.");
@@ -46,7 +47,6 @@ public class PalindromeCheckerApp {
 
         System.out.println("=======================================");
 
-        // Close scanner
         scanner.close();
     }
 }
